@@ -1,0 +1,124 @@
+<html>
+<head>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-UajtYKNeqQRT8w0FBtPHHaglAWAXgDs&callback=initMap"
+  type="text/javascript"></script>
+  <style type="text/css">
+
+    #map{
+      height:100%;
+      width:100%;
+    }
+  </style>
+  <script>
+
+
+  var moveunit= 0.000005;
+  var myLat = parseFloat(localStorage.getItem("myLat"));
+  var myLong = parseFloat(localStorage.getItem("myLong"));
+//  var Location = [10.850968, 106.771098];
+  var Location =[myLat,myLong];
+  function initialize() {
+
+      var latlng = new google.maps.LatLng(Location[0], Location[1]);
+      var myOptions = {
+          zoom: 20,
+          center: latlng,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+
+      map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+      marker = new google.maps.Marker({
+          position: latlng,
+          map: map,
+          icon:"./Pokemon1.gif",
+          animation:google.maps.Animation.BOUNCE
+      });
+      /*createMarker({
+        coords:{lat:Location2[0],lng:Location2[1]}
+      })*/
+
+
+      google.maps.event.addDomListener(document, 'keydown', function(e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+
+        if (code === 87) {
+
+          Location[0] = Location[0] + moveunit;
+          console.log("W");
+          var result = [Location[0], Location[1]];
+          transition(result);
+
+        }
+        if(code === 83)
+        {
+
+          Location[0] = Location[0] - moveunit;
+          console.log("S");
+          var result = [Location[0], Location[1]];
+          transition(result);
+        }
+        if(code === 65)
+        {
+
+          Location[1] = Location[1] - moveunit;
+          console.log("A");
+          var result = [Location[0], Location[1]];
+          transition(result);
+        }
+        if(code === 68)
+        {
+
+          Location[1] = Location[1] + moveunit;
+          console.log("D");
+          var result = [Location[0], Location[1]];
+          transition(result);
+        }
+
+    });
+  }
+
+
+  //Load google map
+ google.maps.event.addDomListener(window, 'load', initialize);
+
+
+  var numDeltas = 100;
+  var delay = 10; //milliseconds
+  var i = 0;
+  var deltaLat;
+  var deltaLng;
+
+  function transition(result){
+      i = 0;
+      deltaLat = (result[0] - Location[0])/numDeltas;
+      deltaLng = (result[1] - Location[1])/numDeltas;
+      moveMarker();
+  }
+
+  function moveMarker(){
+      Location[0] += deltaLat;
+      Location[1] += deltaLng;
+      var latlng = new google.maps.LatLng(Location[0], Location[1]);
+      marker.setTitle("Latitude:"+Location[0]+" | Longitude:"+Location[1]);
+      marker.setPosition(latlng);
+      //myCircle.setPosition(latlng);
+      if(i!=numDeltas){
+          i++;
+          setTimeout(moveMarker, delay);
+      }
+  }
+  </script>
+</head>
+<body>
+
+  <div id='map'>
+
+    </div>
+  </body>
+
+
+
+
+
+</html>
